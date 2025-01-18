@@ -5,7 +5,7 @@ import com.tvz.utrke.model.Race;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RaceDtoMapper extends Mapper<Race, RaceDto>{
+public class RaceDtoMapper extends DtoMapper<Race, RaceDto> {
 
     @Override
     public RaceDto map(Race race) {

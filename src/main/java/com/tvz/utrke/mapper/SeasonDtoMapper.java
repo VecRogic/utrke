@@ -5,7 +5,7 @@ import com.tvz.utrke.model.Season;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SeasonDtoMapper extends Mapper <Season, SeasonDto>{
+public class SeasonDtoMapper extends DtoMapper<Season, SeasonDto> {
 
 
     @Override

@@ -1,8 +1,7 @@
 package com.tvz.utrke.controller;
 
-import com.tvz.utrke.dto.SeasonDto;
+import com.tvz.utrke.dto.RaceResultDto;
 import com.tvz.utrke.facade.RaceResultFacade;
-import com.tvz.utrke.model.RaceResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +19,7 @@ public class RaceResultController {
     }
 
     @GetMapping("/get-by-season-and-round")
-    public List<RaceResult> getRaceResults(@RequestParam("seasonYear") String season, @RequestParam("round") int round) {
+    public List<RaceResultDto> getRaceResults(@RequestParam("seasonYear") String season, @RequestParam("round") int round) {
         return raceResultFacade.getRaceResults(season, round);
     }
 }
