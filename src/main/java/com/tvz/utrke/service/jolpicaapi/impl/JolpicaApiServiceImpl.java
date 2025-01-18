@@ -2,10 +2,7 @@ package com.tvz.utrke.service.jolpicaapi.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tvz.utrke.model.Circut;
-import com.tvz.utrke.model.Location;
-import com.tvz.utrke.model.Race;
-import com.tvz.utrke.model.Season;
+import com.tvz.utrke.model.*;
 import com.tvz.utrke.service.jolpicaapi.JolpicaApiService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -105,6 +102,103 @@ public class JolpicaApiServiceImpl implements JolpicaApiService {
         }
 
         return races;
+    }
+
+    @Override
+    public List<RaceResult> fetchRaceResults(String seasonYear, int round) {
+        String url = jolpicaUrl + "/" + seasonYear + "/" + round + "/results";
+        String response = restTemplate.getForObject(url, String.class);
+
+        List<RaceResult> results = new ArrayList<>();
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode root = objectMapper.readTree(response);
+            JsonNode resultsNode = root.path("MRData").path("RaceTable").path("Races").get(0).path("Results");
+
+            resultsNode.forEach(resultNode -> {
+                RaceResult result = new RaceResult();
+
+                result.setNumber(resultNode.get("number").asText());
+                result.setPosition(resultNode.get("position").asText());
+                result.setPositionText(resultNode.get("positionText").asText());
+                result.setPoints(resultNode.get("points").asText());
+
+                // Parsing the Driver object
+                JsonNode driverNode = resultNode.get("Driver");
+                if (driverNode != null) {
+                    Driver driver = new Driver();
+                    driver.setDriverId(driverNode.get("driverId").asText());
+                    driver.setPermanentNumber(driverNode.get("permanentNumber").asText());
+                    driver.setCode(driverNode.get("code").asText());
+                    driver.setUrl(driverNode.get("url").asText());
+                    driver.setGivenName(driverNode.get("givenName").asText());
+                    driver.setFamilyName(driverNode.get("familyName").asText());
+                    driver.setDateOfBirth(driverNode.get("dateOfBirth").asText());
+                    driver.setNationality(driverNode.get("nationality").asText());
+
+                    result.setDriver(driver);
+                }
+
+                // Parsing the Constructor object
+                JsonNode constructorNode = resultNode.get("Constructor");
+                if (constructorNode != null) {
+                    Constructor constructor = new Constructor();
+                    constructor.setConstructorId(constructorNode.get("constructorId").asText());
+                    constructor.setUrl(constructorNode.get("url").asText());
+                    constructor.setName(constructorNode.get("name").asText());
+                    constructor.setNationality(constructorNode.get("nationality").asText());
+
+                    result.setConstructor(constructor);
+                }
+
+                // Parsing the Time object
+                JsonNode timeNode = resultNode.get("Time");
+                if (timeNode != null) {
+                    Time time = new Time();
+                    time.setMillis(timeNode.get("millis").asText());
+                    time.setTime(timeNode.get("time").asText());
+
+                    result.setTime(time);
+                }
+
+                // Parsing the FastestLap object
+                JsonNode fastestLapNode = resultNode.get("FastestLap");
+                if (fastestLapNode != null) {
+                    FastestLap fastestLap = new FastestLap();
+                    fastestLap.setRank(fastestLapNode.get("rank").asText());
+                    fastestLap.setLap(fastestLapNode.get("lap").asText());
+
+                    // Parsing the FastestLap Time object
+                    JsonNode fastestLapTimeNode = fastestLapNode.get("Time");
+                    if (fastestLapTimeNode != null) {
+                        Time fastestLapTime = new Time();
+                        fastestLapTime.setTime(fastestLapTimeNode.get("time").asText());
+                        fastestLap.setTime(fastestLapTime);
+                    }
+
+                    // Parsing the AverageSpeed object
+                    JsonNode avgSpeedNode = fastestLapNode.get("AverageSpeed");
+                    if (avgSpeedNode != null) {
+                        AverageSpeed averageSpeed = new AverageSpeed();
+                        averageSpeed.setUnits(avgSpeedNode.get("units").asText());
+                        averageSpeed.setSpeed(avgSpeedNode.get("speed").asText());
+
+                        fastestLap.setAverageSpeed(averageSpeed);
+                    }
+
+                    // Set the fastest lap in the result
+                    result.setFastestLap(fastestLap);
+                }
+
+                // Add the result to the list
+                results.add(result);
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return results;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.tvz.utrke.controller;
 
+import com.tvz.utrke.dto.RaceDto;
 import com.tvz.utrke.facade.RaceFacade;
-import com.tvz.utrke.model.Race;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +19,7 @@ public class RaceController {
     }
 
     @GetMapping("/get-all-by-season")
-    public List<Race> getBySeason(@RequestParam("season") String season) {
+    public List<RaceDto> getBySeason(@RequestParam("season") String season) {
         return raceFacade.getAllRacesBySeason(season);
     }
 }
