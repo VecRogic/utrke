@@ -19,7 +19,7 @@ public class RaceController {
     }
 
     @GetMapping("/get-all-by-season")
-    public List<RaceDto> getBySeason(@RequestParam("season") String season) {
+    public List<RaceDto> getBySeason(@RequestParam("seasonYear") String season) {
         return raceFacade.getAllRacesBySeason(season);
     }
 }
