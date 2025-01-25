@@ -320,5 +320,36 @@ public class JolpicaApiServiceImpl implements JolpicaApiService {
         return drivers;
     }
 
+    @Override
+    public Constructor getConstructorById(String constructorId) {
+        String url = jolpicaUrl + "/constructors/" + constructorId;
+        String response = restTemplate.getForObject(url, String.class);
+
+        Constructor constructor = null;
+
+        try {
+            // Initialize ObjectMapper for parsing JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            // Parse the response into a JsonNode
+            JsonNode root = objectMapper.readTree(response);
+            JsonNode constructorsNode = root.path("MRData").path("ConstructorTable").path("Constructors");
+
+            // Check if there is a constructor in the response
+            if (constructorsNode.isArray() && constructorsNode.size() > 0) {
+                JsonNode constructorNode = constructorsNode.get(0); // Since we expect one constructor object
+
+                constructor = new Constructor();
+                constructor.setConstructorId(constructorNode.get("constructorId").asText());
+                constructor.setUrl(constructorNode.get("url").asText());
+                constructor.setName(constructorNode.get("name").asText());
+                constructor.setNationality(constructorNode.get("nationality").asText());
+            }
+        } catch (Exception e) {
+            // Log the exception if any occurs
+            e.printStackTrace();
+        }
+
+        return constructor;
+    }
 
 }

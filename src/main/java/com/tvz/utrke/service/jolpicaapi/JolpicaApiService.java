@@ -1,9 +1,6 @@
 package com.tvz.utrke.service.jolpicaapi;
 
-import com.tvz.utrke.model.Driver;
-import com.tvz.utrke.model.Race;
-import com.tvz.utrke.model.RaceResult;
-import com.tvz.utrke.model.Season;
+import com.tvz.utrke.model.*;
 
 import java.util.List;
 
@@ -20,4 +17,6 @@ public interface JolpicaApiService {
     List<Race> getRacesByDriverId(String driverId);
 
     List<Driver> getDriversByConstructorId(String constructorId);
+
+    Constructor getConstructorById(String constructorId);
 }
