@@ -1,7 +1,9 @@
 package com.tvz.utrke.dto;
 
+import groovy.transform.Sortable;
 import lombok.Data;
 
+@Sortable
 @Data
 public class RaceDto {
     private String season;

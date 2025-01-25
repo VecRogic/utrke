@@ -45,7 +45,7 @@ public class JolpicaApiServiceImpl implements JolpicaApiService {
             e.printStackTrace();
         }
 
-        return seasons;
+        return seasons.reversed();
     }
 
     public List<Race> fetchRacesBySeason(String seasonYear) {
@@ -120,7 +120,7 @@ public class JolpicaApiServiceImpl implements JolpicaApiService {
                 RaceResult result = new RaceResult();
 
                 result.setNumber(resultNode.get("number").asText());
-                result.setPosition(resultNode.get("position").asText());
+                result.setPosition(resultNode.get("position").asInt());
                 result.setPositionText(resultNode.get("positionText").asText());
                 result.setPoints(resultNode.get("points").asText());
 
@@ -284,5 +284,41 @@ public class JolpicaApiServiceImpl implements JolpicaApiService {
 
         return races;
     }
+
+    @Override
+    public List<Driver> getDriversByConstructorId(String constructorId) {
+        String url = jolpicaUrl + "/constructors/" + constructorId + "/drivers";
+        String response = restTemplate.getForObject(url, String.class);
+
+        List<Driver> drivers = new ArrayList<>();
+
+        try {
+            // Initialize ObjectMapper for parsing JSON
+            ObjectMapper objectMapper = new ObjectMapper();
+            // Parse the response into a JsonNode
+            JsonNode root = objectMapper.readTree(response);
+            JsonNode driversNode = root.path("MRData").path("DriverTable").path("Drivers");
+
+            // Iterate over the Drivers array and map to Driver objects
+            driversNode.forEach(node -> {
+                Driver driver = new Driver();
+                driver.setDriverId(node.get("driverId").asText());
+                driver.setPermanentNumber(node.has("permanentNumber") ? node.get("permanentNumber").asText() : null);
+                driver.setCode(node.get("code").asText());
+                driver.setUrl(node.get("url").asText());
+                driver.setGivenName(node.get("givenName").asText());
+                driver.setFamilyName(node.get("familyName").asText());
+                driver.setDateOfBirth(node.get("dateOfBirth").asText());
+                driver.setNationality(node.get("nationality").asText());
+                drivers.add(driver);
+            });
+        } catch (Exception e) {
+            // Log the exception if any occurs
+            e.printStackTrace();
+        }
+
+        return drivers;
+    }
+
 
 }

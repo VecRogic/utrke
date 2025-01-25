@@ -7,6 +7,7 @@ import com.tvz.utrke.model.RaceResult;
 import com.tvz.utrke.service.jolpicaapi.JolpicaApiService;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,6 +27,8 @@ public class RaceResultFacadeImpl implements RaceResultFacade {
     @Override
     public List<RaceResultDto> getRaceResults(String seasonYear, int round) {
         List<RaceResult> raceResults = jolpicaApiService.fetchRaceResults(seasonYear, round);
+
+        raceResults.sort(Comparator.comparing(RaceResult::getPosition));
 
         return raceResults.stream()
                 .map(raceResultDtoMapper::map)

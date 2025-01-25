@@ -18,4 +18,6 @@ public interface JolpicaApiService {
     Driver getDriverById(String driverId);
 
     List<Race> getRacesByDriverId(String driverId);
+
+    List<Driver> getDriversByConstructorId(String constructorId);
 }

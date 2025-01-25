@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class RaceResultDto {
     String number;
-    String position;
+    Integer position;
     Long points;
     DriverDto driver;
     ConstructorDto constructor;

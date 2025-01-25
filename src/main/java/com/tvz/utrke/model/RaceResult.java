@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class RaceResult {
     private String number;
-    private String position;
+    private Integer position;
     private String positionText;
     private String points;
     private Driver driver;
