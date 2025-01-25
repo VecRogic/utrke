@@ -252,6 +252,7 @@ public class JolpicaApiServiceImpl implements JolpicaApiService {
                     race.setRound(node.get("round").asText());
                     race.setUrl(node.get("url").asText());
                     race.setRaceName(node.get("raceName").asText());
+                    race.setDate(node.get("date").asText());
 
                     JsonNode circuitNode = node.get("Circuit");
                     if (circuitNode != null) {
