@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/races")
@@ -21,5 +22,10 @@ public class RaceController {
     @GetMapping("/get-all-by-season")
     public List<RaceDto> getBySeason(@RequestParam("seasonYear") String season) {
         return raceFacade.getAllRacesBySeason(season);
+    }
+
+    @GetMapping("/get-by-driver-id")
+    public Map<String, Object> getByDriver(@RequestParam("driverId") String driverId) {
+        return raceFacade.getRacesByDriverId(driverId);
     }
 }

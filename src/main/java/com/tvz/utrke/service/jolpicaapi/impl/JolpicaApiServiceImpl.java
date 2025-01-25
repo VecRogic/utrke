@@ -201,4 +201,87 @@ public class JolpicaApiServiceImpl implements JolpicaApiService {
         return results;
     }
 
+    @Override
+    public Driver getDriverById(String driverId) {
+        String url = jolpicaUrl + "/drivers/" + driverId;
+        String response = restTemplate.getForObject(url, String.class);
+
+        Driver driver = null;
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode root = objectMapper.readTree(response);
+            JsonNode driversNode = root.path("MRData").path("DriverTable").path("Drivers");
+
+            if (driversNode.isArray() && driversNode.size() > 0) {
+                JsonNode driverNode = driversNode.get(0);
+                driver = new Driver();
+
+                driver.setDriverId(driverNode.get("driverId").asText());
+                driver.setPermanentNumber(driverNode.get("permanentNumber").asText());
+                driver.setCode(driverNode.get("code").asText());
+                driver.setUrl(driverNode.get("url").asText());
+                driver.setGivenName(driverNode.get("givenName").asText());
+                driver.setFamilyName(driverNode.get("familyName").asText());
+                driver.setDateOfBirth(driverNode.get("dateOfBirth").asText());
+                driver.setNationality(driverNode.get("nationality").asText());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return driver;
+    }
+
+    @Override
+    public List<Race> getRacesByDriverId(String driverId) {
+        String url = jolpicaUrl + "/drivers/" + driverId + "/races/";
+        String response = restTemplate.getForObject(url, String.class);
+
+        List<Race> races = new ArrayList<>();
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode root = objectMapper.readTree(response);
+            JsonNode racesNode = root.path("MRData").path("RaceTable").path("Races");
+
+            if (racesNode.isArray()) {
+                racesNode.forEach(node -> {
+                    Race race = new Race();
+                    race.setSeason(node.get("season").asText());
+                    race.setRound(node.get("round").asText());
+                    race.setUrl(node.get("url").asText());
+                    race.setRaceName(node.get("raceName").asText());
+
+                    JsonNode circuitNode = node.get("Circuit");
+                    if (circuitNode != null) {
+                        Circut circuit = new Circut();
+                        circuit.setCircuitId(circuitNode.get("circuitId").asText());
+                        circuit.setUrl(circuitNode.get("url").asText());
+                        circuit.setCircuitName(circuitNode.get("circuitName").asText());
+
+                        JsonNode locationNode = circuitNode.get("Location");
+                        if (locationNode != null) {
+                            Location location = new Location();
+                            location.setLat(locationNode.get("lat").asText());
+                            location.setLongitude(locationNode.get("long").asText());
+                            location.setLocality(locationNode.get("locality").asText());
+                            location.setCountry(locationNode.get("country").asText());
+
+                            circuit.setLocation(location);
+                        }
+
+                        race.setCircuit(circuit);
+                    }
+
+                    races.add(race);
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return races;
+    }
+
 }

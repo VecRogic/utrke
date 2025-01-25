@@ -12,8 +12,14 @@ public class DriverDtoMapper extends DtoMapper<Driver, DriverDto> {
         DriverDto driverDto = new DriverDto();
 
         driverDto.setDriverId(driver.getDriverId());
-        driverDto.setDriverFirstAndLastName(driver.getGivenName() + ' ' + driver.getFamilyName());
+        driverDto.setCode(driver.getCode());
+        driverDto.setUrl(driver.getUrl());
+        driverDto.setFirstAndLastName(driver.getGivenName() + " " + driver.getFamilyName());
+        driverDto.setFamilyName(driver.getFamilyName());
+        driverDto.setDateOfBirth(driver.getDateOfBirth());
+        driverDto.setNationality(driver.getNationality());
 
         return driverDto;
     }
+
 }
