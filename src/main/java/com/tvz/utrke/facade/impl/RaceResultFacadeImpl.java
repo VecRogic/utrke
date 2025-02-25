@@ -26,12 +26,9 @@ public class RaceResultFacadeImpl implements RaceResultFacade {
 
     @Override
     public List<RaceResultDto> getRaceResults(String seasonYear, int round) {
-        List<RaceResult> raceResults = jolpicaApiService.fetchRaceResults(seasonYear, round);
-
-        raceResults.sort(Comparator.comparing(RaceResult::getPosition));
-
-        return raceResults.stream()
-                .map(raceResultDtoMapper::map)
-                .collect(Collectors.toList());
+        return jolpicaApiService.fetchRaceResults(seasonYear, round) // Mono<List<Season>>
+                .map(raceResults -> raceResults.stream()
+                        .map(raceResultDtoMapper::map) // Convert each Season to SeasonDto
+                        .collect(Collectors.toList())).block();
     }
 }

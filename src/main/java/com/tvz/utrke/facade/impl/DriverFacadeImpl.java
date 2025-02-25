@@ -26,12 +26,9 @@ public class DriverFacadeImpl implements DriverFacade {
 
     @Override
     public List<DriverDto> getDriversByConstructorId(String constructorId) {
-        List<Driver> drivers = jolpicaApiService.getDriversByConstructorId(constructorId);
-
-        drivers.sort(Comparator.comparing(Driver::getGivenName));
-
-        return drivers.stream()
-                .map(driverDtoMapper::map)
-                .collect(Collectors.toList());
+        return jolpicaApiService.getDriversByConstructorId(constructorId)
+                .map(driver -> driver.stream()
+                        .map(driverDtoMapper::map)
+                        .collect(Collectors.toList())).block();
     }
 }

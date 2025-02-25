@@ -1,22 +1,24 @@
 package com.tvz.utrke.service.jolpicaapi;
 
 import com.tvz.utrke.model.*;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 public interface JolpicaApiService {
 
-    List<Season> fetchSeasons();
+    Mono<List<Season>> fetchSeasons();
 
-    List<Race> fetchRacesBySeason(String seasonYear);
+    Mono<List<Race>> fetchRacesBySeason(String seasonYear);
 
-    List<RaceResult> fetchRaceResults(String seasonYear, int round);
+    Mono<List<RaceResult>> fetchRaceResults(String seasonYear, int round);
 
-    Driver getDriverById(String driverId);
+    Mono<Driver> getDriverById(String driverId);
 
-    List<Race> getRacesByDriverId(String driverId);
+    Mono<List<Race>> getRacesByDriverId(String driverId);
 
-    List<Driver> getDriversByConstructorId(String constructorId);
+    Mono<List<Driver>> getDriversByConstructorId(String constructorId);
 
     Constructor getConstructorById(String constructorId);
 }

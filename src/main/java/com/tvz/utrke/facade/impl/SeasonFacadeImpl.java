@@ -7,8 +7,10 @@ import com.tvz.utrke.model.Season;
 import com.tvz.utrke.service.jolpicaapi.JolpicaApiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -22,10 +24,9 @@ public class SeasonFacadeImpl implements SeasonFacade {
     SeasonDtoMapper seasonDtoMapper;
 
     public List<SeasonDto> getSeasons() {
-        List<Season> seasons = jolpicaApiService.fetchSeasons();
-
-        return seasons.stream()
-                .map(seasonDtoMapper::map)
-                .collect(Collectors.toList());
+        return jolpicaApiService.fetchSeasons() // Mono<List<Season>>
+                .map(seasons -> seasons.stream()
+                        .map(seasonDtoMapper::map) // Convert each Season to SeasonDto
+                        .collect(Collectors.toList())).block(); // Convert Stream to List
     }
 }
