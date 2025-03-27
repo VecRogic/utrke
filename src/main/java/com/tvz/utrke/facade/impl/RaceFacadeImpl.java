@@ -2,21 +2,19 @@ package com.tvz.utrke.facade.impl;
 
 import com.tvz.utrke.dto.DriverDto;
 import com.tvz.utrke.dto.RaceDto;
-import com.tvz.utrke.dto.SeasonDto;
 import com.tvz.utrke.facade.RaceFacade;
 import com.tvz.utrke.mapper.DriverDtoMapper;
 import com.tvz.utrke.mapper.RaceDtoMapper;
-import com.tvz.utrke.model.Race;
-import com.tvz.utrke.service.jolpicaapi.JolpicaApiService;
+import com.tvz.utrke.service.JolpicaApiService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Component
 public class RaceFacadeImpl implements RaceFacade {
 
@@ -25,12 +23,6 @@ public class RaceFacadeImpl implements RaceFacade {
     private final RaceDtoMapper raceDtoMapper;
 
     private final DriverDtoMapper driverDtoMapper;
-
-    public RaceFacadeImpl(JolpicaApiService jolpicaApiService, RaceDtoMapper raceDtoMapper, DriverDtoMapper driverDtoMapper) {
-        this.jolpicaApiService = jolpicaApiService;
-        this.raceDtoMapper = raceDtoMapper;
-        this.driverDtoMapper = driverDtoMapper;
-    }
 
     @Override
     public List<RaceDto> getAllRacesBySeason(String seasonYear) {

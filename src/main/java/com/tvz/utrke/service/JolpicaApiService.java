@@ -1,10 +1,9 @@
-package com.tvz.utrke.service.jolpicaapi;
+package com.tvz.utrke.service;
 
 import com.tvz.utrke.model.*;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Map;
 
 public interface JolpicaApiService {
 
@@ -20,5 +19,5 @@ public interface JolpicaApiService {
 
     Mono<List<Driver>> getDriversByConstructorId(String constructorId);
 
-    Constructor getConstructorById(String constructorId);
+    Mono<Constructor> getConstructorById(String constructorId);
 }

@@ -5,13 +5,15 @@ import com.tvz.utrke.dto.DriverDto;
 import com.tvz.utrke.facade.ConstructorFacade;
 import com.tvz.utrke.facade.DriverFacade;
 import com.tvz.utrke.mapper.ConstructorDtoMapper;
-import com.tvz.utrke.service.jolpicaapi.JolpicaApiService;
+import com.tvz.utrke.service.JolpicaApiService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@AllArgsConstructor
 @Component
 public class ConstructorFacadeImpl implements ConstructorFacade {
 
@@ -21,15 +23,10 @@ public class ConstructorFacadeImpl implements ConstructorFacade {
 
     private final ConstructorDtoMapper constructorDtoMapper;
 
-    public ConstructorFacadeImpl(JolpicaApiService jolpicaApiService, DriverFacade driverFacade, ConstructorDtoMapper constructorDtoMapper) {
-        this.jolpicaApiService = jolpicaApiService;
-        this.driverFacade = driverFacade;
-        this.constructorDtoMapper = constructorDtoMapper;
-    }
-
     @Override
     public ConstructorDto getConstructorById(String constructorId) {
-        return constructorDtoMapper.map(jolpicaApiService.getConstructorById(constructorId));
+        return jolpicaApiService.getConstructorById(constructorId)
+                .map(constructorDtoMapper::map).block();
     }
 
     @Override

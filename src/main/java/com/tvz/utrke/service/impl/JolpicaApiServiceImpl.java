@@ -1,10 +1,10 @@
-package com.tvz.utrke.service.jolpicaapi.impl;
+package com.tvz.utrke.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tvz.utrke.model.*;
-import com.tvz.utrke.service.jolpicaapi.JolpicaApiService;
-import groovy.util.logging.Slf4j;
+import com.tvz.utrke.service.JolpicaApiService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
@@ -12,11 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-@lombok.extern.slf4j.Slf4j
 @Slf4j
 @Service
 public class JolpicaApiServiceImpl implements JolpicaApiService {
@@ -121,35 +118,18 @@ public class JolpicaApiServiceImpl implements JolpicaApiService {
     }
 
     @Override
-    public Constructor getConstructorById(String constructorId) {
+    public Mono<Constructor> getConstructorById(String constructorId) {
         String url = jolpicaUrl + "/constructors/" + constructorId;
-        String response = restTemplate.getForObject(url, String.class);
 
-        Constructor constructor = null;
+        return webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(JsonNode.class)
+                .map(jsonResponse -> {
+                    JsonNode constructorNode = jsonResponse.path("MRData").path("ConstructorTable").path("Constructors");
 
-        try {
-            // Initialize ObjectMapper for parsing JSON
-            ObjectMapper objectMapper = new ObjectMapper();
-            // Parse the response into a JsonNode
-            JsonNode root = objectMapper.readTree(response);
-            JsonNode constructorsNode = root.path("MRData").path("ConstructorTable").path("Constructors");
-
-            // Check if there is a constructor in the response
-            if (constructorsNode.isArray() && constructorsNode.size() > 0) {
-                JsonNode constructorNode = constructorsNode.get(0); // Since we expect one constructor object
-
-                constructor = new Constructor();
-                constructor.setConstructorId(constructorNode.get("constructorId").asText());
-                constructor.setUrl(constructorNode.get("url").asText());
-                constructor.setName(constructorNode.get("name").asText());
-                constructor.setNationality(constructorNode.get("nationality").asText());
-            }
-        } catch (Exception e) {
-            // Log the exception if any occurs
-            e.printStackTrace();
-        }
-
-        return constructor;
+                    return objectMapper.convertValue(constructorNode, objectMapper.getTypeFactory().constructCollectionType(List.class, Constructor.class));
+                });
     }
 
 }

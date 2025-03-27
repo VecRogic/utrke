@@ -3,30 +3,25 @@ package com.tvz.utrke.facade.impl;
 import com.tvz.utrke.dto.SeasonDto;
 import com.tvz.utrke.facade.SeasonFacade;
 import com.tvz.utrke.mapper.SeasonDtoMapper;
-import com.tvz.utrke.model.Season;
-import com.tvz.utrke.service.jolpicaapi.JolpicaApiService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.tvz.utrke.service.JolpicaApiService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Component
 public class SeasonFacadeImpl implements SeasonFacade {
 
+    private final JolpicaApiService jolpicaApiService;
 
-    @Autowired
-    JolpicaApiService jolpicaApiService;
-
-    @Autowired
-    SeasonDtoMapper seasonDtoMapper;
+    private final SeasonDtoMapper seasonDtoMapper;
 
     public List<SeasonDto> getSeasons() {
-        return jolpicaApiService.fetchSeasons() // Mono<List<Season>>
+        return jolpicaApiService.fetchSeasons()
                 .map(seasons -> seasons.stream()
-                        .map(seasonDtoMapper::map) // Convert each Season to SeasonDto
-                        .collect(Collectors.toList())).block(); // Convert Stream to List
+                        .map(seasonDtoMapper::map)
+                        .collect(Collectors.toList())).block();
     }
 }
